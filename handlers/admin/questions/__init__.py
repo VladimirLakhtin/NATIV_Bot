@@ -7,7 +7,6 @@ from handlers.admin.questions.delete import router as delete_question_router
 
 router = Router()
 router.include_routers(
-    start_router,
     add_question_router,
     questions_list_router,
     update_question_router,
