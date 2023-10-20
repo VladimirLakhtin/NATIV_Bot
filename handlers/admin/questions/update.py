@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from handlers.admin.questions.states import UpdateQuestionForm
 from callback_factories.admin import AdminQuestionAction, QuestionAction
-from handlers.funcs import update_question
+from handlers.funcs.questions import update_question
 from keyboards.admin import back_to_question_info_keyboard, question_info_keyboard
 from models.db import session_factory
 from text import admin as txt
@@ -24,7 +24,7 @@ async def update_question_handler(callback: t.CallbackQuery, state: FSMContext,
     keyboard = back_to_question_info_keyboard(callback_data.question_id)
     text = txt.UPDATE_QUESTION if callback_data.field == 'question' else txt.UPDATE_ANSWER
     await callback.message.edit_text(text=text)
-    await callback.message.edit_reply_markup(reply_markup=keyboard.as_markup())
+    await callback.message.edit_reply_markup(reply_markup=keyboard)
 
 
 @router.message(UpdateQuestionForm.answer)
@@ -41,4 +41,4 @@ async def process_update_question(message: t.Message, state: FSMContext):
     text = txt.QUESTION_TEMPLATE.format(question.question, question.answer)
     keyboard = question_info_keyboard(data['question_id'])
     await main_message.edit_text(text, parse_mode='html')
-    await main_message.edit_reply_markup(reply_markup=keyboard.as_markup())
+    await main_message.edit_reply_markup(reply_markup=keyboard)

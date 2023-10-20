@@ -1,23 +1,29 @@
+from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from callback_factories.admin import QuestionAction, AdminQuestionAction
+from handlers.funcs.flags import check_consultation_available
 from models import Question
+from models.db import session_factory
 
 
-def start_keyboard() -> ReplyKeyboardBuilder:
+async def start_keyboard() -> ReplyKeyboardMarkup:
+    cons = await check_consultation_available(session_factory)
     builder = ReplyKeyboardBuilder()
     builder.button(text="Добавить вопрос")
-    builder.button(text="Список вопросов")
-    return builder
+    builder.button(text="Популярные вопросы")
+    builder.button(text=f"Запись на консультацию {'🟢' if cons else '🔴'}")
+    builder.adjust(2, 1)
+    return builder.as_markup(resize_keyboard=True)
 
 
-def back_to_start_keyboard() -> ReplyKeyboardBuilder:
+def back_to_start_keyboard() -> ReplyKeyboardMarkup:
     builder = ReplyKeyboardBuilder()
     builder.button(text="Назад")
-    return builder
+    return builder.as_markup(resize_keyboard=True)
 
 
-def questions_keyboard(questions: list[Question]) -> InlineKeyboardBuilder:
+def questions_keyboard(questions: list[Question]) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     for q in questions:
         builder.button(text=q.question, callback_data=AdminQuestionAction(
@@ -25,10 +31,10 @@ def questions_keyboard(questions: list[Question]) -> InlineKeyboardBuilder:
             question_id=q.id,
         ))
     builder.adjust(1)
-    return builder
+    return builder.as_markup(resize_keyboard=True)
 
 
-def question_info_keyboard(question_id: int) -> InlineKeyboardBuilder:
+def question_info_keyboard(question_id: int) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="Изменить вопрос", callback_data=AdminQuestionAction(
         action=QuestionAction.update,
@@ -48,19 +54,19 @@ def question_info_keyboard(question_id: int) -> InlineKeyboardBuilder:
         action=QuestionAction.list_,
     ))
     builder.adjust(2, 1, 1)
-    return builder
+    return builder.as_markup(resize_keyboard=True)
 
 
-def back_to_question_info_keyboard(question_id: int) -> InlineKeyboardBuilder:
+def back_to_question_info_keyboard(question_id: int) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="Назад", callback_data=AdminQuestionAction(
         action=QuestionAction.details,
         question_id=question_id,
     ))
-    return builder
+    return builder.as_markup(resize_keyboard=True)
 
 
-def confirm_delete_question_keyboard(question_id: int) -> InlineKeyboardBuilder:
+def confirm_delete_question_keyboard(question_id: int) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="Да ✅", callback_data=AdminQuestionAction(
         action=QuestionAction.confirm_delete,
@@ -70,4 +76,4 @@ def confirm_delete_question_keyboard(question_id: int) -> InlineKeyboardBuilder:
         action=QuestionAction.details,
         question_id=question_id,
     ))
-    return builder
+    return builder.as_markup(resize_keyboard=True)

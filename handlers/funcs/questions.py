@@ -25,7 +25,7 @@ async def create_question(session_factory: async_sessionmaker,
 async def get_question_by_id(session_factory: async_sessionmaker,
                              id: int) -> Question:
     async with session_factory() as session:
-        stmt = select(Question).filter(Question.id == id)
+        stmt = select(Question).filter(Question.id == id).order_by(Question.id)
         result: Result = await session.execute(stmt)
         question = result.scalar()
     return question
