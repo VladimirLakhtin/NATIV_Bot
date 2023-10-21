@@ -75,7 +75,8 @@ async def process_send_docs(message: t.Message, state: FSMContext):
         admin_text = admin_txt.USER_SIGNED_UP.format(
             message.from_user.full_name, rus_type, username)
         for admin in admins:
-            await message.bot.send_message(chat_id=admin.tg_id, text=admin_text)
+            if admin.tg_id:
+                await message.bot.send_message(chat_id=admin.tg_id, text=admin_text)
     else:
         admins_username = '\n'.join('@' + admin.username for admin in admins)
         text = txt.FINISH_SIGN_UP_WO_USERNAME.format(admins_username)
