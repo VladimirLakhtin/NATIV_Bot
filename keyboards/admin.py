@@ -13,7 +13,8 @@ async def start_keyboard() -> ReplyKeyboardMarkup:
     builder.button(text="Добавить вопрос")
     builder.button(text="Популярные вопросы")
     builder.button(text=f"Запись на консультацию {'🟢' if cons else '🔴'}")
-    builder.adjust(2, 1)
+    builder.button(text=f"Выгрузить данные")
+    builder.adjust(2, 2)
     return builder.as_markup(resize_keyboard=True)
 
 

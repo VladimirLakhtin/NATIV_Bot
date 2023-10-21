@@ -1,3 +1,4 @@
+from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 import config

@@ -32,3 +32,7 @@ USER_SIGNED_UP_CONSULT = """Пользователь {} записался на 
 USER_CONNECT = """Пользователь {} хочет связаться с менеджером\n\n@{}"""
 
 CONSULTATION_ON = """Запись на консультацию включена"""
+
+FILE_RECORD_TEMPLATE = """
+[{date}] @{user} нажал на кнопку {text}
+"""
