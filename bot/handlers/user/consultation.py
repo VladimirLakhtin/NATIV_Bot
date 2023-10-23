@@ -15,19 +15,16 @@ from text import admin as admin_txt
 router = Router()
 
 
-@router.message((F.text == "Записаться на консультацию ✏️") &
-                (F.from_user.func(lambda user: not run(check_consultation_available(session_factory)))))
-async def reject_sign_up_handler(message: t.Message):
-    text = txt.CONSULTATION_NOT_AVAILABLE
-    await message.answer(text)
-
-
 @router.message((F.text == "Записаться на консультацию ✏️"))
 async def start_sign_up_handler(message: t.Message, state: FSMContext):
-    await state.set_state(ConsultSingUp.send_form)
-    text = txt.CONSULTATION_AVAILABLE
-    keyboard = send_form_confirm()
-    await message.answer(text, reply_markup=keyboard)
+    if await check_consultation_available(session_factory):
+        await state.set_state(ConsultSingUp.send_form)
+        text = txt.CONSULTATION_AVAILABLE
+        keyboard = send_form_confirm()
+        await message.answer(text, reply_markup=keyboard)
+    else:
+        text = txt.CONSULTATION_NOT_AVAILABLE
+        await message.answer(text)
 
 
 @router.message(ConsultSingUp.send_form, F.text == "Отправлено 📩")

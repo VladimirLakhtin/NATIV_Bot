@@ -30,15 +30,18 @@ async def update_question_handler(callback: t.CallbackQuery, state: FSMContext,
 @router.message(UpdateQuestionForm.answer)
 @router.message(UpdateQuestionForm.question)
 async def process_update_question(message: t.Message, state: FSMContext):
-    data = await state.get_data()
-    main_message = data['main_msg']
-    await state.clear()
+    if message.text:
+        data = await state.get_data()
+        main_message = data['main_msg']
+        await state.clear()
 
-    update_data = {data['field']: message.text}
-    question = await update_question(session_factory, data['question_id'], update_data)
+        update_data = {data['field']: message.text}
+        question = await update_question(session_factory, data['question_id'], update_data)
 
-    await message.delete()
-    text = txt.QUESTION_TEMPLATE.format(question.question, question.answer)
-    keyboard = question_info_keyboard(data['question_id'])
-    await main_message.edit_text(text, parse_mode='html')
-    await main_message.edit_reply_markup(reply_markup=keyboard)
+        await message.delete()
+        text = txt.QUESTION_TEMPLATE.format(question.question, question.answer)
+        keyboard = question_info_keyboard(data['question_id'])
+        await main_message.edit_text(text, parse_mode='html')
+        await main_message.edit_reply_markup(reply_markup=keyboard)
+    else:
+        await message.answer(txt.ERROR_INPUT)

@@ -32,7 +32,6 @@ def question_info_keyboard() -> InlineKeyboardMarkup:
     builder.button(text="К списку вопросов", callback_data=UserQuestionAction(
             action=QuestionAction.list_,
         ))
-    builder.button(text="Связаться с нами ❤️", callback_data="link:with:manager")
     return builder.as_markup(resize_keyboard=True)
 
 

@@ -2,19 +2,21 @@ from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from callback_factories.admin import QuestionAction, AdminQuestionAction
-from handlers.funcs.flags import check_consultation_available
+from handlers.funcs.flags import check_consultation_available, check_lesson_available
 from models import Question
 from models.db import session_factory
 
 
 async def start_keyboard() -> ReplyKeyboardMarkup:
-    cons = await check_consultation_available(session_factory)
+    consul = await check_consultation_available(session_factory)
+    lesson = await check_lesson_available(session_factory)
     builder = ReplyKeyboardBuilder()
     builder.button(text="Добавить вопрос")
     builder.button(text="Популярные вопросы")
-    builder.button(text=f"Запись на консультацию {'🟢' if cons else '🔴'}")
+    builder.button(text=f"Запись на консультацию {'🟢' if consul else '🔴'}")
+    builder.button(text=f"Запись на занятие {'🟢' if lesson else '🔴'}")
     builder.button(text=f"Выгрузить данные")
-    builder.adjust(2, 2)
+    builder.adjust(2, 2, 1)
     return builder.as_markup(resize_keyboard=True)
 
 
